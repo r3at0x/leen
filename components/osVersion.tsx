@@ -65,27 +65,27 @@ export function OsVersion() {
   }, []);
 
   if (isLoading) {
-    return <div className="text-white">Loading OS version data...</div>;
+    return <div className="text-foreground">Loading OS version data...</div>;
   }
 
   if (error) {
-    return <div className="text-white">Error: {error}</div>;
+    return <div className="text-foreground">Error: {error}</div>;
   }
 
   const mostCommonVersion = chartData[0]?.version || "Unknown";
 
   return (
-    <Card className="bg-gray-800 text-white">
+    <Card>
       <CardHeader>
         <CardTitle>OS Version Distribution</CardTitle>
-        <CardDescription className="text-gray-300">Across all devices</CardDescription>
+        <CardDescription>Across all devices</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
           <BarChart width={600} height={300} data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#4a5568" />
-            <XAxis dataKey="version" stroke="#e2e8f0" />
-            <YAxis stroke="#e2e8f0" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+            <XAxis dataKey="version" stroke="var(--foreground)" />
+            <YAxis stroke="var(--foreground)" />
             <Tooltip content={<ChartTooltipContent />} />
             <Bar dataKey="count" fill="var(--color-count)" radius={4} />
           </BarChart>
@@ -95,7 +95,7 @@ export function OsVersion() {
         <div className="flex gap-2 font-medium leading-none">
           {mostCommonVersion} is the most common version <TrendingUp className="h-4 w-4" />
         </div>
-        <div className="leading-none text-gray-300">
+        <div className="leading-none text-muted-foreground">
           Showing distribution of OS versions across all devices
         </div>
       </CardFooter>

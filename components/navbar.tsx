@@ -4,6 +4,8 @@ import { Menu, Package2, CircleUser } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { useTheme } from "next-themes";
+import { Moon, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,9 +22,15 @@ import { signInWithGithub } from "@/authActions";
 export function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const { setTheme, theme } = useTheme();
 
   const isActive = (href: string) => {
     return pathname === href ? "text-foreground font-semibold" : "text-muted-foreground";
+  };
+
+  const toggleTheme = () => {
+    console.log("Current theme:", theme);
+    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   return (
@@ -80,6 +88,17 @@ export function Navbar() {
         </SheetContent>
       </Sheet>
       <div className="flex items-center gap-4 md:gap-2 lg:gap-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          className="mr-2"
+        >
+          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+        {/* <span className="text-sm">Current theme: {theme}</span> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
