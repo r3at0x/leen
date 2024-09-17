@@ -35,7 +35,7 @@ export default async function RootLayout({
         <SessionProvider session={session}>
           <NextTopLoader color="#ffffff" />
           <Navbar />
-          <main className="flex-grow flex items-center justify-center">{children}</main>
+          <main className="items-center justify-center mx-12">{children}</main>
         </SessionProvider>
       </body>
     </html>
