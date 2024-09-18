@@ -16,7 +16,14 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!session) {
-    return <AccessDenied />;
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-64px)]">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
+          <p>You need to be authenticated to view this page.</p>
+        </div>
+      </div>
+    );
   }
 
   return <>{children}</>;
