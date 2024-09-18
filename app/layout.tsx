@@ -6,6 +6,7 @@ import NextTopLoader from "nextjs-toploader";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { ThemeProvider } from "@/components/theme-provider";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,7 +33,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -42,7 +43,9 @@ export default async function RootLayout({
           <SessionProvider session={session}>
             <NextTopLoader color="#ffffff" />
             <Navbar />
-            <main className="items-center justify-center mx-12">{children}</main>
+            <main className="items-center justify-center mx-12">
+              <ProtectedRoute>{children}</ProtectedRoute>
+            </main>
           </SessionProvider>
         </ThemeProvider>
       </body>
