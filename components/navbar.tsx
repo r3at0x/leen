@@ -6,6 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { signInWithGithub } from "@/authActions";
+import { signInWithGithub, signInWithGoogle } from "@/authActions";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -25,7 +26,9 @@ export function Navbar() {
   const { setTheme, theme } = useTheme();
 
   const isActive = (href: string) => {
-    return pathname === href ? "text-foreground font-semibold" : "text-muted-foreground";
+    return pathname === href
+      ? "text-foreground font-semibold"
+      : "text-muted-foreground";
   };
 
   const toggleTheme = () => {
@@ -40,7 +43,16 @@ export function Navbar() {
           href="#"
           className="flex items-center gap-2 text-lg font-semibold md:text-base"
         >
-          <Package2 className="h-6 w-6" />
+          <Image
+            src="/icon.png"
+            alt="Icon"
+            width={24}
+            height={24}
+            className={cn(
+              "transition-all duration-300 ease-in-out",
+              theme === "dark" ? "invert" : ""
+            )}
+          />
           <span className="sr-only">Acme Inc</span>
         </Link>
         <Link
@@ -51,11 +63,18 @@ export function Navbar() {
         </Link>
         <Link
           href="/devices"
-          className={`${isActive("/devices")} transition-colors hover:text-foreground`}
+          className={`${isActive(
+            "/devices"
+          )} transition-colors hover:text-foreground`}
         >
           Devices
         </Link>
-        <Link href="/alerts" className={`${isActive("/alerts")} transition-colors hover:text-foreground`}>
+        <Link
+          href="/alerts"
+          className={`${isActive(
+            "/alerts"
+          )} transition-colors hover:text-foreground`}
+        >
           Alerts
         </Link>
       </nav>
@@ -75,10 +94,7 @@ export function Navbar() {
               <Package2 className="h-6 w-6" />
               <span className="sr-only">Acme Inc</span>
             </Link>
-            <Link
-              href="/"
-              className={`${isActive("/")} hover:text-foreground`}
-            >
+            <Link href="/" className={`${isActive("/")} hover:text-foreground`}>
               Dashboard
             </Link>
             <Link
@@ -132,13 +148,22 @@ export function Navbar() {
                 </DropdownMenuItem>
               </>
             ) : (
-              <DropdownMenuItem asChild>
-                <form action={signInWithGithub}>
-                  <button type="submit" className="w-full text-left">
-                    Sign in with GitHub
-                  </button>
-                </form>
-              </DropdownMenuItem>
+              <>
+                <DropdownMenuItem asChild>
+                  <form action={signInWithGithub}>
+                    <button type="submit" className="w-full text-left">
+                      Sign in with GitHub
+                    </button>
+                  </form>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <form action={signInWithGoogle}>
+                    <button type="submit" className="w-full text-left">
+                      Sign in with Google
+                    </button>
+                  </form>
+                </DropdownMenuItem>
+              </>
             )}
           </DropdownMenuContent>
         </DropdownMenu>
