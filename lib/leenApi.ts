@@ -23,4 +23,19 @@ export const fetchDevices = async (params: FetchDevicesParams = {}) => {
   }
 };
 
+interface FetchAlertsParams {
+  limit?: number;
+  offset?: number;
+}
+
+export const fetchAlerts = async (params: FetchAlertsParams = {}) => {
+  try {
+    const response = await leenApi.get("/edr/alerts", { params });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching alerts:", error);
+    throw error;
+  }
+};
+
 export default leenApi;

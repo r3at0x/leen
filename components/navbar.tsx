@@ -55,6 +55,9 @@ export function Navbar() {
         >
           Devices
         </Link>
+        <Link href="/alerts" className={`${isActive("/alerts")} transition-colors hover:text-foreground`}>
+          Alerts
+        </Link>
       </nav>
       <Sheet>
         <SheetTrigger asChild>
