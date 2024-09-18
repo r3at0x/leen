@@ -2,7 +2,6 @@
 
 import { useSession } from "next-auth/react";
 import { ReactNode } from "react";
-import AccessDenied from "./accessDenied";
 
 interface ProtectedRouteProps {
   children: ReactNode;
