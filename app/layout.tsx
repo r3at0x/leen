@@ -41,7 +41,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <SessionProvider session={session}>
-            <NextTopLoader color="#ffffff" />
+            <NextTopLoader color="#ffffff" showSpinner={false} />
             <Navbar />
             <main className="items-center justify-center mx-12">
               <ProtectedRoute>{children}</ProtectedRoute>
