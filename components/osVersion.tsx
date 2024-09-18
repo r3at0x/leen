@@ -30,7 +30,9 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function OsVersion() {
-  const [chartData, setChartData] = useState<{ version: string; count: number }[]>([]);
+  const [chartData, setChartData] = useState<
+    { version: string; count: number }[]
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -93,7 +95,8 @@ export function OsVersion() {
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
-          {mostCommonVersion} is the most common version <TrendingUp className="h-4 w-4" />
+          {mostCommonVersion} is the most common version{" "}
+          <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
           Showing distribution of OS versions across all devices
