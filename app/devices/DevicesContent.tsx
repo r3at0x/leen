@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 // Update this interface
 interface FilterOptions {
   status: string;
+  vendor: string;
 }
 
 export default function DevicesPage() {
@@ -42,6 +43,7 @@ export default function DevicesPage() {
   const [error, setError] = useState<string | null>(null);
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
     status: 'all',
+    vendor: 'all',
   });
 
   useEffect(() => {
@@ -72,8 +74,8 @@ export default function DevicesPage() {
         String(value).toLowerCase().includes(searchTerm.toLowerCase())
       );
       const matchesStatus = filterOptions.status === 'all' || device.status === filterOptions.status;
-      
-      return matchesSearch && matchesStatus;
+      const matchesVendor = filterOptions.vendor === 'all' || device.vendor === filterOptions.vendor;
+      return matchesSearch && matchesStatus && matchesVendor;
     });
     setFilteredDevices(filtered);
     setCurrentPage(1);
@@ -95,7 +97,7 @@ export default function DevicesPage() {
   };
 
   const clearFilters = () => {
-    setFilterOptions({ status: 'all' });
+    setFilterOptions({ status: 'all', vendor: 'all' });
     setSearchTerm('');
   };
 
@@ -140,6 +142,15 @@ export default function DevicesPage() {
             <SelectItem value="offline">Offline</SelectItem>
           </SelectContent>
         </Select>
+        <Select value={filterOptions.vendor} onValueChange={(value) => handleFilterChange('vendor', value)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Vendor" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Vendors</SelectItem>
+            {/* Add vendor options dynamically based on your data */}
+          </SelectContent>
+        </Select>
         <Button onClick={clearFilters}>Clear Filters</Button>
       </div>
       {filteredDevices.length > 0 ? (
@@ -154,6 +165,7 @@ export default function DevicesPage() {
                   <TableHead>IPv4</TableHead>
                   <TableHead>MAC Addresses</TableHead>
                   <TableHead>Last Seen</TableHead>
+                  <TableHead>Vendor</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -171,6 +183,11 @@ export default function DevicesPage() {
                     <TableCell>
                       {device.last_seen
                         ? format(parseISO(device.last_seen), "PPpp")
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      {device.source_vendors && device.source_vendors.length > 0
+                        ? device.source_vendors[0].vendor
                         : "N/A"}
                     </TableCell>
                   </TableRow>
