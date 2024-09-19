@@ -24,6 +24,15 @@ import {
 import { Alert } from "@/types/alert";
 import { format, parseISO } from "date-fns";
 import { Loader2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+
+// Add this new interface
+interface FilterOptions {
+  severity: string;
+  status: string;
+  vendor: string;
+}
 
 export default function AlertsContent() {
   const [allAlerts, setAllAlerts] = useState<Alert[]>([]);
@@ -33,6 +42,11 @@ export default function AlertsContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
   const [error, setError] = useState<string | null>(null);
+  const [filterOptions, setFilterOptions] = useState<FilterOptions>({
+    severity: 'all',
+    status: 'all',
+    vendor: 'all',
+  });
 
   useEffect(() => {
     async function getAllAlerts() {
@@ -61,14 +75,19 @@ export default function AlertsContent() {
   }, []);
 
   useEffect(() => {
-    const filtered = allAlerts.filter((alert) =>
-      Object.values(alert).some((value) =>
+    const filtered = allAlerts.filter((alert) => {
+      const matchesSearch = Object.values(alert).some((value) =>
         String(value).toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
+      );
+      const matchesSeverity = filterOptions.severity === 'all' || alert.severity === filterOptions.severity;
+      const matchesStatus = filterOptions.status === 'all' || alert.status === filterOptions.status;
+      const matchesVendor = filterOptions.vendor === 'all' || alert.vendor === filterOptions.vendor;
+      
+      return matchesSearch && matchesSeverity && matchesStatus && matchesVendor;
+    });
     setFilteredAlerts(filtered);
     setCurrentPage(1);
-  }, [allAlerts, searchTerm]);
+  }, [allAlerts, searchTerm, filterOptions]);
 
   const paginatedAlerts = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -79,6 +98,15 @@ export default function AlertsContent() {
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
+  };
+
+  const handleFilterChange = (key: keyof FilterOptions, value: string) => {
+    setFilterOptions(prev => ({ ...prev, [key]: value }));
+  };
+
+  const clearFilters = () => {
+    setFilterOptions({ severity: 'all', status: 'all', vendor: 'all' });
+    setSearchTerm('');
   };
 
   console.log("Rendering with isLoading:", isLoading);
@@ -104,13 +132,46 @@ export default function AlertsContent() {
       <h1 className="text-2xl font-bold mb-5">
         Alerts ({filteredAlerts.length})
       </h1>
-      <Input
-        type="text"
-        placeholder="Search alerts..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="mb-4"
-      />
+      <div className="flex space-x-4 mb-4">
+        <Input
+          type="text"
+          placeholder="Search alerts..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-grow"
+        />
+        <Select value={filterOptions.severity} onValueChange={(value) => handleFilterChange('severity', value)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Severity" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Severities</SelectItem>
+            <SelectItem value="low">Low</SelectItem>
+            <SelectItem value="medium">Medium</SelectItem>
+            <SelectItem value="high">High</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={filterOptions.status} onValueChange={(value) => handleFilterChange('status', value)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="unresolved">Unresolved</SelectItem>
+            <SelectItem value="resolved">Resolved</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={filterOptions.vendor} onValueChange={(value) => handleFilterChange('vendor', value)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Vendor" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Vendors</SelectItem>
+            {/* Add vendor options dynamically based on your data */}
+          </SelectContent>
+        </Select>
+        <Button onClick={clearFilters}>Clear Filters</Button>
+      </div>
       {filteredAlerts.length > 0 ? (
         <>
           <ScrollArea className="h-[calc(100vh-300px)]">
