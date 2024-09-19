@@ -1,5 +1,11 @@
+import { Metadata } from "next";
 import { DeviceStatusCards } from "@/components/DeviceStatusCards";
 import { OsVersion } from "@/components/osVersion";
+
+export const metadata: Metadata = {
+  title: "Dashboard | SDMVP",
+  description: "Overview of device statuses and OS version distribution",
+};
 
 export default function Home() {
   return (
