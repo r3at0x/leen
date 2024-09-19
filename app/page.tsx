@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import { DeviceStatusCards } from "@/components/DeviceStatusCards";
-import { OsVersion } from "@/components/osVersion";
+import { DeviceStatusCards } from "@/components/device-status-cards";
+import { OsVersion } from "@/components/os-version";
 
 export const metadata: Metadata = {
   title: "Dashboard | SDMVP",

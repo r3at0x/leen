@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import AlertsContent from "./AlertsContent";
+import AlertsContent from "./alertsContent";
 
 export const metadata: Metadata = {
   title: "Alerts | SDMVP",

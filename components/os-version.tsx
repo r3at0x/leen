@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
-import { fetchDevices } from "@/lib/leenApi";
+import { fetchDevices } from "@/lib/leen-api";
 import { Device } from "@/types/device";
 
 import {

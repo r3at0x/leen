@@ -6,7 +6,7 @@ import NextTopLoader from "nextjs-toploader";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { ThemeProvider } from "@/components/theme-provider";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import ProtectedRoute from "@/components/protected-route";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

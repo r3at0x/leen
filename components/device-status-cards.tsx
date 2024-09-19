@@ -1,14 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { fetchDevices } from "@/lib/leenApi";
+import { fetchDevices } from "@/lib/leen-api";
 import { Wifi, WifiOff, HelpCircle, LucideIcon, Loader2 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Device } from "@/types/device";
 
 export function DeviceStatusCards() {
@@ -42,29 +37,31 @@ export function DeviceStatusCards() {
     return <div>Error: {error}</div>;
   }
 
-  const activeDevices = devices.filter(d => d.status === "active");
-  const offlineDevices = devices.filter(d => d.status === "offline");
-  const unknownDevices = devices.filter(d => d.status !== "active" && d.status !== "offline");
+  const activeDevices = devices.filter((d) => d.status === "active");
+  const offlineDevices = devices.filter((d) => d.status === "offline");
+  const unknownDevices = devices.filter(
+    (d) => d.status !== "active" && d.status !== "offline"
+  );
 
   const totalDevices = devices.length;
 
   return (
     <div className="grid grid-cols-3 gap-4 w-full">
-      <DeviceStatusCard 
-        title="Active" 
-        count={activeDevices.length} 
+      <DeviceStatusCard
+        title="Active"
+        count={activeDevices.length}
         percentage={(activeDevices.length / totalDevices) * 100}
         icon={Wifi}
       />
-      <DeviceStatusCard 
-        title="Offline" 
-        count={offlineDevices.length} 
+      <DeviceStatusCard
+        title="Offline"
+        count={offlineDevices.length}
         percentage={(offlineDevices.length / totalDevices) * 100}
         icon={WifiOff}
       />
-      <DeviceStatusCard 
-        title="Unknown" 
-        count={unknownDevices.length} 
+      <DeviceStatusCard
+        title="Unknown"
+        count={unknownDevices.length}
         percentage={(unknownDevices.length / totalDevices) * 100}
         icon={HelpCircle}
       />
@@ -91,7 +88,9 @@ function DeviceStatusCard({
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{count}</div>
-        <p className="text-xs text-muted-foreground">{percentage.toFixed(1)}% of total devices</p>
+        <p className="text-xs text-muted-foreground">
+          {percentage.toFixed(1)}% of total devices
+        </p>
       </CardContent>
     </Card>
   );
