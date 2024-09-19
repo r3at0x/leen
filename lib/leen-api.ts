@@ -26,6 +26,7 @@ export const fetchDevices = async (params: FetchDevicesParams = {}) => {
 interface FetchAlertsParams {
   limit?: number;
   offset?: number;
+  sort?: string;
 }
 
 export const fetchAlerts = async (params: FetchAlertsParams = {}) => {

@@ -1,83 +1,50 @@
 "use client"
 
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { useTheme } from "next-themes";
+import { FaWindows, FaApple, FaLinux } from "react-icons/fa";
 
-const data = [
-  {
-    name: "Jan",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Feb",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Mar",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Apr",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "May",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Jun",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Jul",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Aug",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Sep",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Oct",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Nov",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Dec",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-]
+interface OverviewProps {
+  data: { name: string; total: number }[];
+}
 
-export function Overview() {
+export function Overview({ data }: OverviewProps) {
+  const { theme } = useTheme();
+  const barColor = theme === "dark" ? "#ffffff" : "#000000";
+  const textColor = theme === "dark" ? "#ffffff" : "#000000";
+
+  const aggregatedData = [
+    { name: "Linux", total: data.filter(item => item.name.includes("Linux")).reduce((sum, item) => sum + item.total, 0), icon: FaLinux },
+    { name: "Windows", total: data.filter(item => item.name.includes("Windows")).reduce((sum, item) => sum + item.total, 0), icon: FaWindows },
+    { name: "macOS", total: data.filter(item => item.name.includes("Mac")).reduce((sum, item) => sum + item.total, 0), icon: FaApple },
+  ].sort((a, b) => b.total - a.total);
+
+  const CustomXAxisTick = ({ x, y, payload }: { x: number; y: number; payload: { value: string } }) => {
+    const Icon = aggregatedData.find(item => item.name === payload.value)?.icon;
+    return (
+      <g transform={`translate(${x},${y})`}>
+        {Icon && <Icon x={-12} y={0} size={24} fill={textColor} />}
+      </g>
+    );
+  };
+
   return (
     <ResponsiveContainer width="100%" height={350}>
-      <BarChart data={data}>
+      <BarChart data={aggregatedData} margin={{ left: 20, right: 20, top: 20, bottom: 40 }}>
         <XAxis
           dataKey="name"
-          stroke="#888888"
-          fontSize={12}
-          tickLine={false}
           axisLine={false}
-        />
-        <YAxis
-          stroke="#888888"
-          fontSize={12}
           tickLine={false}
-          axisLine={false}
-          tickFormatter={(value) => `$${value}`}
+          tick={(props) => <CustomXAxisTick {...props} />}
+          interval={0}
         />
+        <YAxis type="number" stroke={textColor} />
         <Bar
           dataKey="total"
-          fill="currentColor"
+          fill={barColor}
           radius={[4, 4, 0, 0]}
-          className="fill-primary"
         />
       </BarChart>
     </ResponsiveContainer>
-  )
+  );
 }
