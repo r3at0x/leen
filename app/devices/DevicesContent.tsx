@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { fetchDevices } from "@/lib/leenApi";
+import { fetchDevices } from "@/lib/leen-api";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -23,7 +23,13 @@ import {
 import { Device } from "@/types/device";
 import { format, parseISO } from "date-fns";
 import { Loader2 } from "lucide-react"; // Make sure to install lucide-react if not already
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
 // Update this interface
@@ -41,8 +47,8 @@ export default function DevicesPage() {
   const itemsPerPage = 15;
   const [error, setError] = useState<string | null>(null);
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
-    status: 'all',
-    vendor: 'all',
+    status: "all",
+    vendor: "all",
   });
 
   useEffect(() => {
@@ -72,8 +78,12 @@ export default function DevicesPage() {
       const matchesSearch = Object.values(device).some((value) =>
         String(value).toLowerCase().includes(searchTerm.toLowerCase())
       );
-      const matchesStatus = filterOptions.status === 'all' || device.status === filterOptions.status;
-      const matchesVendor = filterOptions.vendor === 'all' || device.vendor === filterOptions.vendor;
+      const matchesStatus =
+        filterOptions.status === "all" ||
+        device.status === filterOptions.status;
+      const matchesVendor =
+        filterOptions.vendor === "all" ||
+        device.vendor === filterOptions.vendor;
       return matchesSearch && matchesStatus && matchesVendor;
     });
     setFilteredDevices(filtered);
@@ -92,12 +102,12 @@ export default function DevicesPage() {
   };
 
   const handleFilterChange = (key: keyof FilterOptions, value: string) => {
-    setFilterOptions(prev => ({ ...prev, [key]: value }));
+    setFilterOptions((prev) => ({ ...prev, [key]: value }));
   };
 
   const clearFilters = () => {
-    setFilterOptions({ status: 'all', vendor: 'all' });
-    setSearchTerm('');
+    setFilterOptions({ status: "all", vendor: "all" });
+    setSearchTerm("");
   };
 
   console.log("Rendering with isLoading:", isLoading);
@@ -131,7 +141,10 @@ export default function DevicesPage() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="flex-grow"
         />
-        <Select value={filterOptions.status} onValueChange={(value) => handleFilterChange('status', value)}>
+        <Select
+          value={filterOptions.status}
+          onValueChange={(value) => handleFilterChange("status", value)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
@@ -141,7 +154,10 @@ export default function DevicesPage() {
             <SelectItem value="offline">Offline</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={filterOptions.vendor} onValueChange={(value) => handleFilterChange('vendor', value)}>
+        <Select
+          value={filterOptions.vendor}
+          onValueChange={(value) => handleFilterChange("vendor", value)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Vendor" />
           </SelectTrigger>

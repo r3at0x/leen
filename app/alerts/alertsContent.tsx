@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { fetchAlerts } from "@/lib/leenApi";
+import { fetchAlerts } from "@/lib/leen-api";
 import { AxiosError } from "axios";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -24,7 +24,13 @@ import {
 import { Alert } from "@/types/alert";
 import { format, parseISO } from "date-fns";
 import { Loader2 } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
 // Add this new interface
@@ -43,9 +49,9 @@ export default function AlertsContent() {
   const itemsPerPage = 15;
   const [error, setError] = useState<string | null>(null);
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
-    severity: 'all',
-    status: 'all',
-    vendor: 'all',
+    severity: "all",
+    status: "all",
+    vendor: "all",
   });
 
   useEffect(() => {
@@ -79,10 +85,14 @@ export default function AlertsContent() {
       const matchesSearch = Object.values(alert).some((value) =>
         String(value).toLowerCase().includes(searchTerm.toLowerCase())
       );
-      const matchesSeverity = filterOptions.severity === 'all' || alert.severity === filterOptions.severity;
-      const matchesStatus = filterOptions.status === 'all' || alert.status === filterOptions.status;
-      const matchesVendor = filterOptions.vendor === 'all' || alert.vendor === filterOptions.vendor;
-      
+      const matchesSeverity =
+        filterOptions.severity === "all" ||
+        alert.severity === filterOptions.severity;
+      const matchesStatus =
+        filterOptions.status === "all" || alert.status === filterOptions.status;
+      const matchesVendor =
+        filterOptions.vendor === "all" || alert.vendor === filterOptions.vendor;
+
       return matchesSearch && matchesSeverity && matchesStatus && matchesVendor;
     });
     setFilteredAlerts(filtered);
@@ -101,12 +111,12 @@ export default function AlertsContent() {
   };
 
   const handleFilterChange = (key: keyof FilterOptions, value: string) => {
-    setFilterOptions(prev => ({ ...prev, [key]: value }));
+    setFilterOptions((prev) => ({ ...prev, [key]: value }));
   };
 
   const clearFilters = () => {
-    setFilterOptions({ severity: 'all', status: 'all', vendor: 'all' });
-    setSearchTerm('');
+    setFilterOptions({ severity: "all", status: "all", vendor: "all" });
+    setSearchTerm("");
   };
 
   console.log("Rendering with isLoading:", isLoading);
@@ -140,7 +150,10 @@ export default function AlertsContent() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="flex-grow"
         />
-        <Select value={filterOptions.severity} onValueChange={(value) => handleFilterChange('severity', value)}>
+        <Select
+          value={filterOptions.severity}
+          onValueChange={(value) => handleFilterChange("severity", value)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Severity" />
           </SelectTrigger>
@@ -151,7 +164,10 @@ export default function AlertsContent() {
             <SelectItem value="high">High</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={filterOptions.status} onValueChange={(value) => handleFilterChange('status', value)}>
+        <Select
+          value={filterOptions.status}
+          onValueChange={(value) => handleFilterChange("status", value)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
@@ -161,7 +177,10 @@ export default function AlertsContent() {
             <SelectItem value="resolved">Resolved</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={filterOptions.vendor} onValueChange={(value) => handleFilterChange('vendor', value)}>
+        <Select
+          value={filterOptions.vendor}
+          onValueChange={(value) => handleFilterChange("vendor", value)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Vendor" />
           </SelectTrigger>
