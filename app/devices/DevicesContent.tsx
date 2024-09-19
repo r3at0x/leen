@@ -23,6 +23,14 @@ import {
 import { Device } from "@/types/device";
 import { format, parseISO } from "date-fns";
 import { Loader2 } from "lucide-react"; // Make sure to install lucide-react if not already
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+
+// Update this interface
+interface FilterOptions {
+  status: string;
+  vendor: string;
+}
 
 export default function DevicesPage() {
   const [allDevices, setAllDevices] = useState<Device[]>([]);
@@ -32,6 +40,10 @@ export default function DevicesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
   const [error, setError] = useState<string | null>(null);
+  const [filterOptions, setFilterOptions] = useState<FilterOptions>({
+    status: 'all',
+    vendor: 'all',
+  });
 
   useEffect(() => {
     async function getAllDevices() {
@@ -56,14 +68,17 @@ export default function DevicesPage() {
   }, []);
 
   useEffect(() => {
-    const filtered = allDevices.filter((device) =>
-      Object.values(device).some((value) =>
+    const filtered = allDevices.filter((device) => {
+      const matchesSearch = Object.values(device).some((value) =>
         String(value).toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
+      );
+      const matchesStatus = filterOptions.status === 'all' || device.status === filterOptions.status;
+      const matchesVendor = filterOptions.vendor === 'all' || device.vendor === filterOptions.vendor;
+      return matchesSearch && matchesStatus && matchesVendor;
+    });
     setFilteredDevices(filtered);
-    setCurrentPage(1); // Reset to first page when search changes
-  }, [allDevices, searchTerm]);
+    setCurrentPage(1);
+  }, [allDevices, searchTerm, filterOptions]);
 
   const paginatedDevices = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -74,6 +89,15 @@ export default function DevicesPage() {
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
+  };
+
+  const handleFilterChange = (key: keyof FilterOptions, value: string) => {
+    setFilterOptions(prev => ({ ...prev, [key]: value }));
+  };
+
+  const clearFilters = () => {
+    setFilterOptions({ status: 'all', vendor: 'all' });
+    setSearchTerm('');
   };
 
   console.log("Rendering with isLoading:", isLoading);
@@ -99,13 +123,35 @@ export default function DevicesPage() {
       <h1 className="text-2xl font-bold mb-5">
         Devices ({filteredDevices.length})
       </h1>
-      <Input
-        type="text"
-        placeholder="Search devices..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="mb-4"
-      />
+      <div className="flex space-x-4 mb-4">
+        <Input
+          type="text"
+          placeholder="Search devices..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-grow"
+        />
+        <Select value={filterOptions.status} onValueChange={(value) => handleFilterChange('status', value)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="offline">Offline</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={filterOptions.vendor} onValueChange={(value) => handleFilterChange('vendor', value)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Vendor" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Vendors</SelectItem>
+            {/* Add vendor options dynamically based on your data */}
+          </SelectContent>
+        </Select>
+        <Button onClick={clearFilters}>Clear Filters</Button>
+      </div>
       {filteredDevices.length > 0 ? (
         <>
           <ScrollArea className="h-[calc(100vh-300px)]">
@@ -118,6 +164,7 @@ export default function DevicesPage() {
                   <TableHead>IPv4</TableHead>
                   <TableHead>MAC Addresses</TableHead>
                   <TableHead>Last Seen</TableHead>
+                  <TableHead>Vendor</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -135,6 +182,11 @@ export default function DevicesPage() {
                     <TableCell>
                       {device.last_seen
                         ? format(parseISO(device.last_seen), "PPpp")
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      {device.source_vendors && device.source_vendors.length > 0
+                        ? device.source_vendors[0].vendor
                         : "N/A"}
                     </TableCell>
                   </TableRow>
