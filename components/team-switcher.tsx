@@ -48,12 +48,12 @@ const groups = [
     label: "Teams",
     teams: [
       {
-        label: "Acme Inc.",
-        value: "acme-inc",
+        label: "Team 1",
+        value: "team-1",
       },
       {
-        label: "Monsters Inc.",
-        value: "monsters",
+        label: "Team 2",
+        value: "team-2",
       },
     ],
   },
@@ -157,9 +157,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create organization</DialogTitle>
-          <DialogDescription>
-            Add a new organization.
-          </DialogDescription>
+          <DialogDescription>Add a new organization.</DialogDescription>
         </DialogHeader>
         <div>
           <div className="space-y-4 py-2 pb-4">

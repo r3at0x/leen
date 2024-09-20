@@ -1,7 +1,7 @@
 "use client";
-// import { Metadata } from "next";
+
 import Image from "next/image";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { fetchDevices, fetchAlerts } from "@/lib/leen-api";
 import { Device } from "@/types/device";
 import { Alert } from "@/types/alert";
@@ -15,28 +15,24 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Overview } from "@/components/overview";
-import { RecentAlerts } from "@/components/RecentAlerts";
+import { RecentAlerts } from "@/components/recent-alerts";
 
-import { 
-  Laptop, 
-  AlertTriangle, 
-  Clock, 
-  Percent, 
-} from "lucide-react";
-
-// export const metadata: Metadata = {
-//   title: "Dashboard",
-//   description: "Example dashboard app built using the components.",
-// };
+import { Laptop, AlertTriangle, Clock, Percent } from "lucide-react";
 
 export default function DashboardPage() {
   const [deviceCount, setDeviceCount] = useState(0);
   const [unresolvedAlerts, setUnresolvedAlerts] = useState(0);
   const [offlineDevices, setOfflineDevices] = useState(0);
-  const [alertSeverities, setAlertSeverities] = useState({ low: 0, medium: 0, high: 0 });
+  const [alertSeverities, setAlertSeverities] = useState({
+    low: 0,
+    medium: 0,
+    high: 0,
+  });
   const [averageDeviceUptime, setAverageDeviceUptime] = useState(0);
   const [alertResolutionRate, setAlertResolutionRate] = useState(0);
-  const [osVersions, setOsVersions] = useState<{ name: string; total: number }[]>([]);
+  const [osVersions, setOsVersions] = useState<
+    { name: string; total: number }[]
+  >([]);
   const [recentAlerts, setRecentAlerts] = useState<Alert[]>([]);
 
   useEffect(() => {
@@ -46,37 +42,57 @@ export default function DashboardPage() {
         const alertsData = await fetchAlerts({ limit: 500 });
 
         setDeviceCount(devicesData.items.length);
-        setOfflineDevices(devicesData.items.filter((device: Device) => device.status === 'offline').length);
-        
-        const unresolved = alertsData.items.filter((alert: Alert) => alert.status === 'unresolved');
+        setOfflineDevices(
+          devicesData.items.filter(
+            (device: Device) => device.status === "offline"
+          ).length
+        );
+
+        const unresolved = alertsData.items.filter(
+          (alert: Alert) => alert.status === "unresolved"
+        );
         setUnresolvedAlerts(unresolved.length);
-        
-        const severities = unresolved.reduce((acc: Record<string, number>, alert: Alert) => {
-          acc[alert.severity] = (acc[alert.severity] || 0) + 1;
-          return acc;
-        }, { low: 0, medium: 0, high: 0 });
+
+        const severities = unresolved.reduce(
+          (acc: Record<string, number>, alert: Alert) => {
+            acc[alert.severity] = (acc[alert.severity] || 0) + 1;
+            return acc;
+          },
+          { low: 0, medium: 0, high: 0 }
+        );
         setAlertSeverities(severities);
 
         // Calculate average device uptime (assuming last_seen is in ISO format)
         const now = new Date();
-        const totalUptime = devicesData.items.reduce((sum: number, device: Device) => {
-          const lastSeen = new Date(device.last_seen);
-          return sum + (now.getTime() - lastSeen.getTime());
-        }, 0);
-        const avgUptime = totalUptime / devicesData.items.length / (1000 * 60 * 60 * 24); // in days
+        const totalUptime = devicesData.items.reduce(
+          (sum: number, device: Device) => {
+            const lastSeen = new Date(device.last_seen);
+            return sum + (now.getTime() - lastSeen.getTime());
+          },
+          0
+        );
+        const avgUptime =
+          totalUptime / devicesData.items.length / (1000 * 60 * 60 * 24); // in days
         setAverageDeviceUptime(Math.round(avgUptime * 10) / 10); // Round to 1 decimal place
 
         // Calculate alert resolution rate
         const totalAlerts = alertsData.items.length;
-        const resolvedAlerts = alertsData.items.filter((alert: Alert) => alert.status === 'resolved').length;
-        setAlertResolutionRate(Math.round((resolvedAlerts / totalAlerts) * 100));
+        const resolvedAlerts = alertsData.items.filter(
+          (alert: Alert) => alert.status === "resolved"
+        ).length;
+        setAlertResolutionRate(
+          Math.round((resolvedAlerts / totalAlerts) * 100)
+        );
 
         // Process OS versions data
-        const osVersionCounts = devicesData.items.reduce((acc: Record<string, number>, device: Device) => {
-          const osVersion = device.os_version || 'Unknown';
-          acc[osVersion] = (acc[osVersion] || 0) + 1;
-          return acc;
-        }, {});
+        const osVersionCounts = devicesData.items.reduce(
+          (acc: Record<string, number>, device: Device) => {
+            const osVersion = device.os_version || "Unknown";
+            acc[osVersion] = (acc[osVersion] || 0) + 1;
+            return acc;
+          },
+          {}
+        );
 
         const osVersionsData = Object.entries(osVersionCounts)
           .map(([name, total]) => ({ name, total: total as number }))
@@ -86,9 +102,11 @@ export default function DashboardPage() {
         setOsVersions(osVersionsData);
 
         // Fetch recent alerts
-        const recentAlertsData = await fetchAlerts({ limit: 5, sort: 'last_event_time:desc' });
+        const recentAlertsData = await fetchAlerts({
+          limit: 5,
+          sort: "last_event_time:desc",
+        });
         setRecentAlerts(recentAlertsData.items);
-
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       }
@@ -134,7 +152,9 @@ export default function DashboardPage() {
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Connected Devices</CardTitle>
+                    <CardTitle className="text-sm font-medium">
+                      Connected Devices
+                    </CardTitle>
                     <Laptop className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
@@ -146,23 +166,30 @@ export default function DashboardPage() {
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Unresolved Alerts</CardTitle>
+                    <CardTitle className="text-sm font-medium">
+                      Unresolved Alerts
+                    </CardTitle>
                     <AlertTriangle className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{unresolvedAlerts}</div>
                     <p className="text-xs text-muted-foreground">
-                      {alertSeverities.low} low, {alertSeverities.medium} medium, {alertSeverities.high} high
+                      {alertSeverities.low} low, {alertSeverities.medium}{" "}
+                      medium, {alertSeverities.high} high
                     </p>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Avg Device Uptime</CardTitle>
+                    <CardTitle className="text-sm font-medium">
+                      Avg Device Uptime
+                    </CardTitle>
                     <Clock className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{averageDeviceUptime} days</div>
+                    <div className="text-2xl font-bold">
+                      {averageDeviceUptime} days
+                    </div>
                     <p className="text-xs text-muted-foreground">
                       Average time since last seen
                     </p>
@@ -170,11 +197,15 @@ export default function DashboardPage() {
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Alert Resolution Rate</CardTitle>
+                    <CardTitle className="text-sm font-medium">
+                      Alert Resolution Rate
+                    </CardTitle>
                     <Percent className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{alertResolutionRate}%</div>
+                    <div className="text-2xl font-bold">
+                      {alertResolutionRate}%
+                    </div>
                     <p className="text-xs text-muted-foreground">
                       of total alerts resolved
                     </p>
