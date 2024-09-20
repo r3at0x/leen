@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Navbar } from "@/components/navbar";
 import NextTopLoader from "nextjs-toploader";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { ThemeProvider } from "@/components/theme-provider";
 import ProtectedRoute from "@/components/protected-route";
+import { Navbar } from "@/components/navbar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -42,10 +42,12 @@ export default async function RootLayout({
         >
           <SessionProvider session={session}>
             <NextTopLoader color="#ffffff" showSpinner={false} />
-            <Navbar />
-            <main className="items-center justify-center mx-12">
-              <ProtectedRoute>{children}</ProtectedRoute>
-            </main>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Navbar />
+              <main className="items-center justify-center">
+                <ProtectedRoute>{children}</ProtectedRoute>
+              </main>
+            </div>
           </SessionProvider>
         </ThemeProvider>
       </body>

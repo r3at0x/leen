@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import DevicesContent from "./DevicesContent";
+import DevicesContent from "./devices-content";
 
 export const metadata: Metadata = {
   title: "Devices | SDMVP",
