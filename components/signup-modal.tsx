@@ -24,9 +24,11 @@ export function SignUpModal({
   const [connectionId, setConnectionId] = useState("");
   const [apiKey, setApiKey] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(email, connectionId, apiKey);
+    // Reload the entire page after successful submission
+    window.location.reload();
   };
 
   return (

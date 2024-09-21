@@ -7,7 +7,7 @@ import { auth } from "@/auth";
 import { ThemeProvider } from "@/components/theme-provider";
 import ProtectedRoute from "@/components/protected-route";
 import { Navbar } from "@/components/navbar";
-import { UserCheck } from "@/components/UserCheck";
+import { UserCheck } from "@/components/user-check";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

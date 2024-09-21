@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { SignUpModal } from "@/components/SignUpModal";
+import { SignUpModal } from "@/components/signup-modal";
 
 export function UserCheck({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
