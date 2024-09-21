@@ -47,6 +47,23 @@ export default function DashboardPage() {
 
       try {
         setIsLoading(true);
+        // Check if the user exists and has valid credentials
+        const userCheckResponse = await fetch("/api/check-user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: userEmail }),
+        });
+        const userCheckData = await userCheckResponse.json();
+
+        if (!userCheckData.exists || !userCheckData.connectionId || !userCheckData.apiKey) {
+          // User doesn't exist or doesn't have valid credentials
+          setIsLoading(false);
+          return;
+        }
+
+        // Fetch dashboard data
         const devicesData = await fetchDevices(userEmail, { limit: 500 });
         const alertsData = await fetchAlerts(userEmail, { limit: 500 });
 

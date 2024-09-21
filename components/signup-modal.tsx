@@ -60,6 +60,10 @@ export function SignUpModal({
     await onSubmit(email, connectionId, apiKey);
     // Close the modal after submission
     onClose();
+    // Reload the page if it's the first login
+    if (isFirstLogin) {
+      window.location.reload();
+    }
   };
 
   const handleClose = () => {

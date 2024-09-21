@@ -62,6 +62,9 @@ export function UserCheck({ children }: { children: React.ReactNode }) {
         if (isUserExist) {
           // Show a success message for updates
           alert("Settings updated successfully!");
+        } else {
+          // Reload the page for first-time sign-ups
+          window.location.reload();
         }
       } else {
         console.error("Operation failed");
