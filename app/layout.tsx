@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import NextTopLoader from "nextjs-toploader";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { ThemeProvider } from "@/components/theme-provider";
 import ProtectedRoute from "@/components/protected-route";
 import { Navbar } from "@/components/navbar";
 import { UserCheck } from "@/components/user-check";
+import { NextTopLoaderWrapper } from "@/components/NextTopLoaderWrapper";
+import Head from 'next/head';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,11 +30,14 @@ export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
-}) {
+}): Promise<React.ReactElement> {
   const session = await auth();
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <Head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </Head>
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans`}>
         <ThemeProvider
           attribute="class"
@@ -42,7 +46,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <SessionProvider session={session}>
-            <NextTopLoader color="#ffffff" showSpinner={false} />
+            <NextTopLoaderWrapper />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <Navbar />
               <main className="items-center justify-center">

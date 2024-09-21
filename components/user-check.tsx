@@ -37,13 +37,16 @@ export function UserCheck({ children }: { children: React.ReactNode }) {
     }
   }, [session, status]);
 
-  const handleSignUp = async (
+  const handleSignUpOrUpdate = async (
     email: string,
     connectionId: string,
     apiKey: string
   ) => {
     try {
-      const response = await fetch("/api/signup", {
+      const endpoint = isUserExist
+        ? "/api/update-user-credentials"
+        : "/api/signup";
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,23 +57,28 @@ export function UserCheck({ children }: { children: React.ReactNode }) {
       if (response.ok) {
         setIsSignUpModalOpen(false);
         setIsUserExist(true);
+        if (isUserExist) {
+          // Show a success message for updates
+          alert("Settings updated successfully!");
+        }
       } else {
-        console.error("Sign up failed");
+        console.error("Operation failed");
       }
     } catch (error) {
-      console.error("Error during sign up:", error);
+      console.error("Error during operation:", error);
     }
   };
 
   return (
     <>
       {children}
-      {isUserExist === false && (
+      {(isUserExist === false || isSignUpModalOpen) && (
         <SignUpModal
           isOpen={isSignUpModalOpen}
           onClose={() => setIsSignUpModalOpen(false)}
-          onSubmit={handleSignUp}
+          onSubmit={handleSignUpOrUpdate}
           email={session?.user?.email || ""}
+          isUpdate={isUserExist ?? false}
         />
       )}
     </>
