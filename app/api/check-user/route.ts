@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
+const userCache = new Map();
+
 export async function POST(request: Request) {
   const { email } = await request.json();
 
@@ -8,21 +10,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Email is required" }, { status: 400 });
   }
 
+  if (userCache.has(email)) {
+    return NextResponse.json(userCache.get(email));
+  }
+
   try {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB_NAME);
     const user = await db.collection("users").findOne({ email });
 
+    let result;
     if (user && user.connectionId && user.apiKey) {
-      return NextResponse.json({
+      result = {
         exists: true,
         connectionId: user.connectionId,
         apiKey: user.apiKey,
-      });
+      };
     } else {
-      console.log("User not found or missing credentials:", email);
-      return NextResponse.json({ exists: false });
+      result = { exists: false };
     }
+
+    userCache.set(email, result);
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Error checking user:", error);
     return NextResponse.json(
