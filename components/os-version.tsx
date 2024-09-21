@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
-import { fetchDevices } from "@/lib/leen-api";
-import { Device } from "@/types/device";
+import { useDevices } from "@/lib/api-hooks";
 
 import {
   Card,
@@ -30,51 +29,10 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function OsVersion({ userEmail }: { userEmail?: string }) {
-  const [chartData, setChartData] = useState<
-    { version: string; count: number }[]
-  >([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { devices } = useDevices(userEmail);
 
-  useEffect(() => {
-    async function fetchOsVersionData() {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const data = await fetchDevices(userEmail, { limit: 500 });
-        const devices: Device[] = data.items;
-
-        const osVersionCounts = devices.reduce((acc, device) => {
-          const version = device.os_version || "Unknown";
-          acc[version] = (acc[version] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
-
-        const sortedData = Object.entries(osVersionCounts)
-          .sort(([, a], [, b]) => b - a)
-          .map(([version, count]) => ({ version, count }));
-
-        setChartData(sortedData);
-      } catch (error) {
-        console.error("Error fetching OS version data:", error);
-        setError("Failed to fetch OS version data");
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchOsVersionData();
-  }, [userEmail]);
-
-  if (isLoading) {
-    return <div className="text-foreground">Loading OS version data...</div>;
-  }
-
-  if (error) {
-    return <div className="text-foreground">Error: {error}</div>;
-  }
-
-  const mostCommonVersion = chartData[0]?.version || "Unknown";
+  const mostCommonVersion =
+    (devices as { os_version: string }[])[0]?.os_version || "Unknown";
 
   return (
     <Card>
@@ -84,9 +42,9 @@ export function OsVersion({ userEmail }: { userEmail?: string }) {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart width={600} height={300} data={chartData}>
+          <BarChart width={600} height={300} data={devices}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-            <XAxis dataKey="version" stroke="var(--foreground)" />
+            <XAxis dataKey="os_version" stroke="var(--foreground)" />
             <YAxis stroke="var(--foreground)" />
             <Tooltip content={<ChartTooltipContent />} />
             <Bar dataKey="count" fill="var(--color-count)" radius={4} />

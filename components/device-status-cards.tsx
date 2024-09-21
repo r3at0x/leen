@@ -1,33 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { fetchDevices } from "@/lib/leen-api";
+import React from "react";
+import { useDevices } from "@/lib/api-hooks";
 import { Wifi, WifiOff, HelpCircle, LucideIcon, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Device } from "@/types/device";
 
 export function DeviceStatusCards({ userEmail }: { userEmail?: string }) {
-  const [devices, setDevices] = useState<Device[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function loadDevices() {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const data = await fetchDevices(userEmail, { limit: 500 });
-        setDevices(data.items);
-      } catch (error) {
-        console.error("Error fetching devices:", error);
-        setError("Failed to load devices");
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadDevices();
-  }, [userEmail]);
+  const { devices, isLoading, error } = useDevices(userEmail);
 
   if (isLoading) {
     return <Loader2 className="h-8 w-8 animate-spin" />;

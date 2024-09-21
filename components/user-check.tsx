@@ -3,16 +3,18 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { SignUpModal } from "@/components/signup-modal";
+import { useRouter } from "next/navigation";
 
 export function UserCheck({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
   const [isUserExist, setIsUserExist] = useState<boolean | null>(null);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const [isFirstLogin, setIsFirstLogin] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const checkUser = async () => {
-      if (session?.user?.email) {
+      if (session?.user?.email && isUserExist === null) {
         try {
           const response = await fetch("/api/check-user", {
             method: "POST",
@@ -37,7 +39,7 @@ export function UserCheck({ children }: { children: React.ReactNode }) {
     if (status === "authenticated") {
       checkUser();
     }
-  }, [session, status]);
+  }, [session, status, isUserExist]);
 
   const handleSignUpOrUpdate = async (
     email: string,
@@ -63,8 +65,8 @@ export function UserCheck({ children }: { children: React.ReactNode }) {
           // Show a success message for updates
           alert("Settings updated successfully!");
         } else {
-          // Reload the page for first-time sign-ups
-          window.location.reload();
+          // Refresh the page for first-time sign-ups
+          router.refresh();
         }
       } else {
         console.error("Operation failed");
@@ -77,13 +79,13 @@ export function UserCheck({ children }: { children: React.ReactNode }) {
   return (
     <>
       {children}
-      {(isUserExist === false || isSignUpModalOpen) && (
+      {isUserExist === false && (
         <SignUpModal
           isOpen={isSignUpModalOpen}
           onClose={() => setIsSignUpModalOpen(false)}
           onSubmit={handleSignUpOrUpdate}
           email={session?.user?.email || ""}
-          isUpdate={isUserExist ?? false}
+          isUpdate={false}
           isFirstLogin={isFirstLogin}
         />
       )}
