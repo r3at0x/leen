@@ -29,7 +29,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function OsVersion() {
+export function OsVersion({ userEmail }: { userEmail?: string }) {
   const [chartData, setChartData] = useState<
     { version: string; count: number }[]
   >([]);
@@ -41,7 +41,7 @@ export function OsVersion() {
       try {
         setIsLoading(true);
         setError(null);
-        const data = await fetchDevices({ limit: 500 });
+        const data = await fetchDevices(userEmail, { limit: 500 });
         const devices: Device[] = data.items;
 
         const osVersionCounts = devices.reduce((acc, device) => {
@@ -64,7 +64,7 @@ export function OsVersion() {
     }
 
     fetchOsVersionData();
-  }, []);
+  }, [userEmail]);
 
   if (isLoading) {
     return <div className="text-foreground">Loading OS version data...</div>;

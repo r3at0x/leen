@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { fetchDevices, fetchAlerts } from "@/lib/leen-api";
 import { Device } from "@/types/device";
 import { Alert } from "@/types/alert";
+import { useSession } from "next-auth/react"; // Add this import
 
 import {
   Card,
@@ -20,6 +21,9 @@ import { RecentAlerts } from "@/components/recent-alerts";
 import { Laptop, AlertTriangle, Clock, Percent } from "lucide-react";
 
 export default function DashboardPage() {
+  const { data: session } = useSession(); // Add this line
+  const userEmail = session?.user?.email; // Add this line
+
   const [deviceCount, setDeviceCount] = useState(0);
   const [unresolvedAlerts, setUnresolvedAlerts] = useState(0);
   const [offlineDevices, setOfflineDevices] = useState(0);
@@ -37,9 +41,11 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function fetchData() {
+      if (!userEmail) return; // Add this check
+
       try {
-        const devicesData = await fetchDevices({ limit: 500 });
-        const alertsData = await fetchAlerts({ limit: 500 });
+        const devicesData = await fetchDevices(userEmail, { limit: 500 });
+        const alertsData = await fetchAlerts(userEmail, { limit: 500 });
 
         setDeviceCount(devicesData.items.length);
         setOfflineDevices(
@@ -102,7 +108,7 @@ export default function DashboardPage() {
         setOsVersions(osVersionsData);
 
         // Fetch recent alerts
-        const recentAlertsData = await fetchAlerts({
+        const recentAlertsData = await fetchAlerts(userEmail, {
           limit: 5,
           sort: "last_event_time:desc",
         });
@@ -113,7 +119,7 @@ export default function DashboardPage() {
     }
 
     fetchData();
-  }, []);
+  }, [userEmail]); // Add userEmail to the dependency array
 
   return (
     <>

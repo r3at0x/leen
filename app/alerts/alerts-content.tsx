@@ -40,7 +40,7 @@ interface FilterOptions {
   vendor: string;
 }
 
-export default function AlertsContent() {
+export default function AlertsContent({ userEmail }: { userEmail?: string }) {
   const [allAlerts, setAllAlerts] = useState<Alert[]>([]);
   const [filteredAlerts, setFilteredAlerts] = useState<Alert[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -56,11 +56,13 @@ export default function AlertsContent() {
 
   useEffect(() => {
     async function getAllAlerts() {
+      if (!userEmail) return; // Add this check
+
       try {
         setIsLoading(true);
         setError(null);
         console.log("Fetching alerts...");
-        const data = await fetchAlerts({ limit: 500 });
+        const data = await fetchAlerts(userEmail, { limit: 500 });
         console.log("Fetched data:", data);
         setAllAlerts(data.items);
         setFilteredAlerts(data.items);
@@ -78,7 +80,7 @@ export default function AlertsContent() {
     }
 
     getAllAlerts();
-  }, []);
+  }, [userEmail]); // Add userEmail to the dependency array
 
   useEffect(() => {
     const filtered = allAlerts.filter((alert) => {
