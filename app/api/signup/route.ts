@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   }
 
   const client = await clientPromise;
-  const db = client.db("your_database_name");
+  const db = client.db(process.env.MONGODB_DB_NAME);
 
   try {
     const existingUser = await db.collection("users").findOne({ email });
