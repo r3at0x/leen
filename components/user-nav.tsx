@@ -13,11 +13,13 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SignUpModal } from "@/components/signup-modal";
+import { UserProfileModal } from "@/components/user-profile-modal";
 
 export function UserNav() {
   const { data: session } = useSession();
   const router = useRouter();
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   if (!session) {
     return null;
@@ -30,6 +32,10 @@ export function UserNav() {
 
   const handleSettingsClick = () => {
     setIsSignUpModalOpen(true);
+  };
+
+  const handleProfileClick = () => {
+    setIsProfileModalOpen(true);
   };
 
   const handleSubmit = async (email: string, connectionId: string, apiKey: string) => {
@@ -84,7 +90,7 @@ export function UserNav() {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem disabled>Profile</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleProfileClick}>Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={handleSettingsClick}>Settings</DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
@@ -98,6 +104,18 @@ export function UserNav() {
           onSubmit={handleSubmit}
           email={session.user.email}
           isUpdate={true}
+        />
+      )}
+      {session?.user && (
+        <UserProfileModal
+          isOpen={isProfileModalOpen}
+          onClose={() => setIsProfileModalOpen(false)}
+          user={{
+            name: session.user.name || "",
+            email: session.user.email || "",
+            image: session.user.image || "",
+          }}
+          lastLogin={new Date()} // You might want to store and retrieve the actual last login time
         />
       )}
     </>
