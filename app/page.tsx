@@ -19,11 +19,13 @@ import { Overview } from "@/components/overview";
 import { RecentAlerts } from "@/components/recent-alerts";
 
 import { Laptop, AlertTriangle, Clock, Percent } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export default function DashboardPage() {
   const { data: session } = useSession(); // Add this line
   const userEmail = session?.user?.email; // Add this line
 
+  const [isLoading, setIsLoading] = useState(true);
   const [deviceCount, setDeviceCount] = useState(0);
   const [unresolvedAlerts, setUnresolvedAlerts] = useState(0);
   const [offlineDevices, setOfflineDevices] = useState(0);
@@ -44,6 +46,24 @@ export default function DashboardPage() {
       if (!userEmail) return; // Add this check
 
       try {
+        setIsLoading(true);
+        // Check if the user exists and has valid credentials
+        const userCheckResponse = await fetch("/api/check-user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: userEmail }),
+        });
+        const userCheckData = await userCheckResponse.json();
+
+        if (!userCheckData.exists || !userCheckData.connectionId || !userCheckData.apiKey) {
+          // User doesn't exist or doesn't have valid credentials
+          setIsLoading(false);
+          return;
+        }
+
+        // Fetch dashboard data
         const devicesData = await fetchDevices(userEmail, { limit: 500 });
         const alertsData = await fetchAlerts(userEmail, { limit: 500 });
 
@@ -115,11 +135,24 @@ export default function DashboardPage() {
         setRecentAlerts(recentAlertsData.items);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
 
     fetchData();
   }, [userEmail]); // Add userEmail to the dependency array
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[calc(100vh-100px)]">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p>Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
