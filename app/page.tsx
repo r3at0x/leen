@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { fetchDevices, fetchAlerts } from "@/lib/leen-api";
 import { Device } from "@/types/device";
@@ -57,7 +56,11 @@ export default function DashboardPage() {
         });
         const userCheckData = await userCheckResponse.json();
 
-        if (!userCheckData.exists || !userCheckData.connectionId || !userCheckData.apiKey) {
+        if (
+          !userCheckData.exists ||
+          !userCheckData.connectionId ||
+          !userCheckData.apiKey
+        ) {
           // User doesn't exist or doesn't have valid credentials
           setIsLoading(false);
           return;
@@ -156,7 +159,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <div className="md:hidden">
+      {/* <div className="md:hidden">
         <Image
           src="/examples/dashboard-light.png"
           width={1280}
@@ -171,7 +174,7 @@ export default function DashboardPage() {
           alt="Dashboard"
           className="hidden dark:block"
         />
-      </div>
+      </div> */}
       <div className="hidden flex-col md:flex">
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">

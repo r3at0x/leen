@@ -13,7 +13,7 @@ export interface Device {
     agent_info?: {
       agent_version: string;
       signature_version: string;
-      policies: Array<any>;
+      policies: Array<{ [key: string]: unknown }>;
     };
   }>;
 }

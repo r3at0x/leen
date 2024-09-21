@@ -8,7 +8,6 @@ import ProtectedRoute from "@/components/protected-route";
 import { Navbar } from "@/components/navbar";
 import { UserCheck } from "@/components/user-check";
 import { NextTopLoaderWrapper } from "@/components/NextTopLoaderWrapper";
-import Head from 'next/head';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -35,9 +34,6 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <Head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-      </Head>
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans`}>
         <ThemeProvider
           attribute="class"
