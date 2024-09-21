@@ -8,6 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { signOut } from "next-auth/react";
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface SignUpModalProps {
   onSubmit: (email: string, connectionId: string, apiKey: string) => void;
   email: string;
   isUpdate?: boolean;
+  isFirstLogin?: boolean;
 }
 
 export function SignUpModal({
@@ -23,6 +25,7 @@ export function SignUpModal({
   onSubmit,
   email,
   isUpdate = false,
+  isFirstLogin = false,
 }: SignUpModalProps) {
   const [connectionId, setConnectionId] = useState("");
   const [apiKey, setApiKey] = useState("");
@@ -59,8 +62,16 @@ export function SignUpModal({
     onClose();
   };
 
+  const handleClose = () => {
+    if (isFirstLogin) {
+      signOut({ redirect: true, callbackUrl: "/" });
+    } else {
+      onClose();
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{isUpdate ? "Update Your Settings" : "Complete Your Registration"}</DialogTitle>

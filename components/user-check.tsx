@@ -8,6 +8,7 @@ export function UserCheck({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
   const [isUserExist, setIsUserExist] = useState<boolean | null>(null);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+  const [isFirstLogin, setIsFirstLogin] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -24,6 +25,7 @@ export function UserCheck({ children }: { children: React.ReactNode }) {
           setIsUserExist(data.exists);
           if (!data.exists) {
             setIsSignUpModalOpen(true);
+            setIsFirstLogin(true);
           }
         } catch (error) {
           console.error("Error checking user:", error);
@@ -79,6 +81,7 @@ export function UserCheck({ children }: { children: React.ReactNode }) {
           onSubmit={handleSignUpOrUpdate}
           email={session?.user?.email || ""}
           isUpdate={isUserExist ?? false}
+          isFirstLogin={isFirstLogin}
         />
       )}
     </>
