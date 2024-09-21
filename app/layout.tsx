@@ -7,6 +7,7 @@ import { auth } from "@/auth";
 import { ThemeProvider } from "@/components/theme-provider";
 import ProtectedRoute from "@/components/protected-route";
 import { Navbar } from "@/components/navbar";
+import { UserCheck } from "@/components/user-check";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -45,7 +46,9 @@ export default async function RootLayout({
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <Navbar />
               <main className="items-center justify-center">
-                <ProtectedRoute>{children}</ProtectedRoute>
+                <UserCheck>
+                  <ProtectedRoute>{children}</ProtectedRoute>
+                </UserCheck>
               </main>
             </div>
           </SessionProvider>

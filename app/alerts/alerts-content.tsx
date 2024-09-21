@@ -40,7 +40,7 @@ interface FilterOptions {
   vendor: string;
 }
 
-export default function AlertsContent() {
+export default function AlertsContent({ userEmail }: { userEmail?: string }) {
   const [allAlerts, setAllAlerts] = useState<Alert[]>([]);
   const [filteredAlerts, setFilteredAlerts] = useState<Alert[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -56,12 +56,12 @@ export default function AlertsContent() {
 
   useEffect(() => {
     async function getAllAlerts() {
+      if (!userEmail) return; // Add this check
+
       try {
         setIsLoading(true);
         setError(null);
-        console.log("Fetching alerts...");
-        const data = await fetchAlerts({ limit: 500 });
-        console.log("Fetched data:", data);
+        const data = await fetchAlerts(userEmail, { limit: 500 });
         setAllAlerts(data.items);
         setFilteredAlerts(data.items);
       } catch (error) {
@@ -72,13 +72,12 @@ export default function AlertsContent() {
           setError("An unknown error occurred");
         }
       } finally {
-        console.log("Setting isLoading to false");
         setIsLoading(false);
       }
     }
 
     getAllAlerts();
-  }, []);
+  }, [userEmail]); // Add userEmail to the dependency array
 
   useEffect(() => {
     const filtered = allAlerts.filter((alert) => {
@@ -118,9 +117,6 @@ export default function AlertsContent() {
     setFilterOptions({ severity: "all", status: "all", vendor: "all" });
     setSearchTerm("");
   };
-
-  console.log("Rendering with isLoading:", isLoading);
-  console.log("Filtered alerts:", filteredAlerts.length);
 
   if (isLoading) {
     return (

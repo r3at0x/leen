@@ -6,7 +6,7 @@ import { Wifi, WifiOff, HelpCircle, LucideIcon, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Device } from "@/types/device";
 
-export function DeviceStatusCards() {
+export function DeviceStatusCards({ userEmail }: { userEmail?: string }) {
   const [devices, setDevices] = useState<Device[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +16,7 @@ export function DeviceStatusCards() {
       try {
         setIsLoading(true);
         setError(null);
-        const data = await fetchDevices({ limit: 500 });
+        const data = await fetchDevices(userEmail, { limit: 500 });
         setDevices(data.items);
       } catch (error) {
         console.error("Error fetching devices:", error);
@@ -27,7 +27,7 @@ export function DeviceStatusCards() {
     }
 
     loadDevices();
-  }, []);
+  }, [userEmail]);
 
   if (isLoading) {
     return <Loader2 className="h-8 w-8 animate-spin" />;

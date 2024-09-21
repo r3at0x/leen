@@ -1,15 +1,5 @@
-import { Metadata } from "next";
-import AlertsContent from "./alerts-content";
-
-export const metadata: Metadata = {
-  title: "Alerts | SDMVP",
-  description: "View and manage security alerts",
-};
+import AlertsPageWrapper from "./alerts-wrapper";
 
 export default function AlertsPage() {
-  return (
-    <div>
-      <AlertsContent />
-    </div>
-  );
+  return <AlertsPageWrapper />;
 }

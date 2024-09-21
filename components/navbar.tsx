@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import TeamSwitcher from "@/components/team-switcher";
+// import TeamSwitcher from "@/components/team-switcher";
 import { MainNav } from "@/components/main-nav";
 import { UserNav } from "@/components/user-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -36,7 +36,7 @@ export function Navbar() {
         )}
         {session && (
           <>
-            <TeamSwitcher />
+            {/* <TeamSwitcher /> */}
             <MainNav className="mx-6" activeItem={pathname} />
           </>
         )}

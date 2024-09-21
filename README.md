@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ![icon](public/favicon.ico) SDMVP - LEEN
+
+SDMVP - LEEN is a Next.js application focused on device management, alert systems, and dashboard monitoring. This project provides a robust platform for tracking and managing devices, handling alerts, and visualizing data through an intuitive dashboard interface.
+
+## Key Features
+
+### Device Management
+
+- Comprehensive device tracking and management system
+- Real-time status updates for connected devices
+- Detailed device information and configuration options
+
+### Alert System
+
+- Real-time alert generation for device-related events
+- Customizable alert thresholds and categories
+- Instant notifications for critical device issues or status changes
+
+### Dashboard Monitoring
+
+- Centralized dashboard for monitoring all connected devices
+- Real-time data visualization and performance metrics
+- Interactive charts and graphs for easy data interpretation
+- Quick access to device management functions and alert settings
+
+## Technical Stack
+
+- **Frontend**: Next.js with React
+- **Authentication**: NextAuth.js (supporting GitHub and Google login)
+- **Database**: MongoDB
+- **Styling**: Tailwind CSS
+- **Theming**: Dynamic light/dark mode using next-themes
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js (v14 or later)
+- npm or yarn
+- MongoDB database
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   git clone https://github.com/your-username/sdmvp-leen.git
+   ```
 
-## Learn More
+2. Install dependencies:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   or
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   yarn install
+   ```
 
-## Deploy on Vercel
+3. Set up environment variables:
+   - Copy `.env.example` to `.env.local`
+   - Fill in the required values (auth secrets, database URI, etc.)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Run the development server:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```bash
+   npm run dev
+   ```
+
+   or
+
+   ```bash
+   yarn dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Configuration
+
+- **Authentication**: Configure GitHub and Google OAuth in their respective developer consoles and update `.env.local` with the credentials.
+- **Database**: Set up a MongoDB database and update the `MONGODB_URI` in `.env.local`.
+- **Device Integration**: Configure device connection settings in the dashboard interface.
+
+## Project Structure
+
+- `components/`: React components including device, alert, and dashboard elements
+- `pages/`: Next.js pages and API routes for device management, alerts, and dashboard
+- `styles/`: Global styles and theme configurations
+- `lib/`: Utility functions for device data processing, alert logic, and dashboard calculations
+
+## License
+
+Copyright © Startup Defense LLC. All Rights Reserved.
+
+## Support
+
+For more information or support, please contact Startup Defense LLC.

@@ -38,7 +38,7 @@ interface FilterOptions {
   vendor: string;
 }
 
-export default function DevicesPage() {
+export default function DevicesPage({ userEmail }: { userEmail?: string }) {
   const [allDevices, setAllDevices] = useState<Device[]>([]);
   const [filteredDevices, setFilteredDevices] = useState<Device[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,25 +53,26 @@ export default function DevicesPage() {
 
   useEffect(() => {
     async function getAllDevices() {
+      if (!userEmail) return; // Add this check
+
       try {
         setIsLoading(true);
         setError(null);
-        console.log("Fetching devices...");
-        const data = await fetchDevices({ limit: 500 });
-        console.log("Fetched data:", data);
+
+        const data = await fetchDevices(userEmail, { limit: 500 });
+
         setAllDevices(data.items);
         setFilteredDevices(data.items);
       } catch (error) {
         console.error("Error fetching devices:", error);
-        // ... error handling ...
+        setError("Failed to fetch devices");
       } finally {
-        console.log("Setting isLoading to false");
         setIsLoading(false);
       }
     }
 
     getAllDevices();
-  }, []);
+  }, [userEmail]); // Add userEmail to the dependency array
 
   useEffect(() => {
     const filtered = allDevices.filter((device) => {
@@ -109,9 +110,6 @@ export default function DevicesPage() {
     setFilterOptions({ status: "all", vendor: "all" });
     setSearchTerm("");
   };
-
-  console.log("Rendering with isLoading:", isLoading);
-  console.log("Filtered devices:", filteredDevices.length);
 
   if (isLoading) {
     return (
