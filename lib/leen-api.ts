@@ -1,8 +1,6 @@
 import axios from "axios";
 
 const createLeenApi = async (email: string) => {
-  console.log("Sending email to check-user:", email); // Add this line
-
   const response = await fetch("/api/check-user", {
     method: "POST",
     headers: {
@@ -16,15 +14,12 @@ const createLeenApi = async (email: string) => {
   }
 
   const data = await response.json();
-  console.log("Response from check-user:", data); // Add this line
 
   if (!data.exists || !data.connectionId || !data.apiKey) {
     throw new Error("User credentials are missing or invalid");
   }
 
   const { connectionId, apiKey } = data;
-
-  console.log("Credentials retrieved:", { connectionId, apiKey });
 
   return axios.create({
     baseURL: "https://api.leen.dev/v1",

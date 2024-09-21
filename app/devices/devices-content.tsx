@@ -58,16 +58,15 @@ export default function DevicesPage({ userEmail }: { userEmail?: string }) {
       try {
         setIsLoading(true);
         setError(null);
-        console.log("Fetching devices...");
+
         const data = await fetchDevices(userEmail, { limit: 500 });
-        console.log("Fetched data:", data);
+
         setAllDevices(data.items);
         setFilteredDevices(data.items);
       } catch (error) {
         console.error("Error fetching devices:", error);
         setError("Failed to fetch devices");
       } finally {
-        console.log("Setting isLoading to false");
         setIsLoading(false);
       }
     }
@@ -111,9 +110,6 @@ export default function DevicesPage({ userEmail }: { userEmail?: string }) {
     setFilterOptions({ status: "all", vendor: "all" });
     setSearchTerm("");
   };
-
-  console.log("Rendering with isLoading:", isLoading);
-  console.log("Filtered devices:", filteredDevices.length);
 
   if (isLoading) {
     return (

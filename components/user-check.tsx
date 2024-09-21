@@ -52,7 +52,6 @@ export function UserCheck({ children }: { children: React.ReactNode }) {
       });
 
       if (response.ok) {
-        console.log("User saved to MongoDB");
         setIsSignUpModalOpen(false);
         setIsUserExist(true);
       } else {

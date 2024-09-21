@@ -61,9 +61,7 @@ export default function AlertsContent({ userEmail }: { userEmail?: string }) {
       try {
         setIsLoading(true);
         setError(null);
-        console.log("Fetching alerts...");
         const data = await fetchAlerts(userEmail, { limit: 500 });
-        console.log("Fetched data:", data);
         setAllAlerts(data.items);
         setFilteredAlerts(data.items);
       } catch (error) {
@@ -74,7 +72,6 @@ export default function AlertsContent({ userEmail }: { userEmail?: string }) {
           setError("An unknown error occurred");
         }
       } finally {
-        console.log("Setting isLoading to false");
         setIsLoading(false);
       }
     }
@@ -120,9 +117,6 @@ export default function AlertsContent({ userEmail }: { userEmail?: string }) {
     setFilterOptions({ severity: "all", status: "all", vendor: "all" });
     setSearchTerm("");
   };
-
-  console.log("Rendering with isLoading:", isLoading);
-  console.log("Filtered alerts:", filteredAlerts.length);
 
   if (isLoading) {
     return (
